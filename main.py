@@ -6,14 +6,17 @@ from stable_baselines3.common.evaluation import evaluate_policy
 # Initialise the training environment (no rendering for speed)
 env = gym.make("CartPole-v1")
 
-# Create the DQNAgent
+# Create the DQNAgent with more robust hyperparameters
 model = DQN(
     policy="MlpPolicy",
     env=env,
-    learning_rate=0.001,
-    buffer_size=50000,
-    learning_starts=10,
-    target_update_interval=100,
+    learning_rate=1e-4,           # Lower learning rate to prevent loss explosion
+    buffer_size=100000,           # Match total timesteps
+    learning_starts=1000,         # Collect data before training
+    target_update_interval=500,   # Slower target updates for stability
+    batch_size=64,                # Larger batch size
+    exploration_fraction=0.5,     # Explore for 50% of the training time
+    exploration_final_eps=0.01,   # Final exploration rate
     verbose=1
 )
 
