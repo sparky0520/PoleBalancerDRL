@@ -19,12 +19,18 @@ uv sync
 ## Usage
 
 ### 1. Training and Testing
-Run the main script to start training (100k steps) followed by 10 evaluation episodes:
+Run the main script to start training (100k steps) followed by evaluation:
 ```powershell
 uv run .\main.py
 ```
 
-### 2. Visualization (TensorBoard)
+### 2. Testing Only
+If you already have a saved model (`dqn_cartpole.zip`) and want to see it run without training:
+```powershell
+uv run .\main.py --test
+```
+
+### 3. Visualization (TensorBoard)
 To see the training statistics (Loss, Rewards, Exploration) in real-time:
 ```powershell
 uv run python -m tensorboard.main --logdir ./dqn_logs/
