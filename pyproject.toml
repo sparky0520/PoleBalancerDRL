@@ -9,7 +9,7 @@ dependencies = [
     "gymnasium[box2d]>=1.2.3",
     "keras-rl2>=1.0.5",
     "numpy>=2.2.6",
-    "setuptools>=82.0.0",
+    "setuptools<70",
     "shimmy[gym-v21]>=2.0.0",
     "stable-baselines3>=2.7.1",
     "swig>=4.4.1",

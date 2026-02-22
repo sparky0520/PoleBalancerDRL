@@ -3,4 +3,4 @@ gymnasium[classic_control]
 shimmy>=2.0
 numpy
 tensorboard
-setuptools
+setuptools<70
