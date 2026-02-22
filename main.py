@@ -2,21 +2,36 @@ import gymnasium as gym
 import numpy as np
 from stable_baselines3 import DQN
 from stable_baselines3.common.evaluation import evaluate_policy
+from gymnasium import RewardWrapper
 
-# Initialise the training environment (no rendering for speed)
+# Custom Wrapper to punish the agent for moving away from the center
+class CenterRewardWrapper(RewardWrapper):
+    def reward(self, reward):
+        # state[0] is the cart position. Limit is ±2.4
+        cart_pos = self.env.unwrapped.state[0]
+        # Subtract a penalty based on distance from center (0 to 1)
+        penalty = abs(cart_pos) / 2.4
+        return float(reward - (penalty * 0.5)) # Ensure it returns a float
+
+# Initialise the training environment with the custom wrapper
 env = gym.make("CartPole-v1")
+env = CenterRewardWrapper(env)
 
-# Create the DQNAgent with more robust hyperparameters
+# Create the DQNAgent with aggressive tuning + TensorBoard logging
 model = DQN(
     policy="MlpPolicy",
     env=env,
-    learning_rate=1e-4,           # Lower learning rate to prevent loss explosion
-    buffer_size=100000,           # Match total timesteps
-    learning_starts=1000,         # Collect data before training
-    target_update_interval=500,   # Slower target updates for stability
-    batch_size=64,                # Larger batch size
-    exploration_fraction=0.5,     # Explore for 50% of the training time
-    exploration_final_eps=0.01,   # Final exploration rate
+    learning_rate=1e-3,
+    buffer_size=50000,
+    learning_starts=1000,
+    batch_size=64,
+    tau=1.0,
+    target_update_interval=500,
+    train_freq=1,
+    gradient_steps=1,
+    exploration_fraction=0.3,     # Explore for 30% of time (more chance for 500)
+    exploration_final_eps=0.02,
+    tensorboard_log="./dqn_logs/", # Enable TensorBoard
     verbose=1
 )
 
